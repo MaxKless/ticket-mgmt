@@ -1,0 +1,83 @@
+<h2>Tickets</h2>
+
+<form class="example-form">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      placeholder="Ex. hire new guy @nrwl"
+      id="newDescription"
+      [formControl]="newDescription"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Assignee</mat-label>
+    <mat-select [formControl]="newAssignee" id="newAssignee">
+      <mat-option *ngFor="let user of users | async" [value]="user.id">
+        {{ user.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<button
+  mat-button
+  color="primary"
+  (click)="addTicket()"
+  style="padding-bottom: 20px"
+>
+  Add Ticket
+</button>
+<div>
+  <mat-slide-toggle
+    [formControl]="filterCompleted"
+    id="filterCompleted"
+    style="padding-bottom: 20px"
+    >Filter Completed?</mat-slide-toggle
+  >
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef>Description</th>
+    <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Assignee</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="completed">
+    <th mat-header-cell *matHeaderCellDef>Completed?</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.completed }}
+      <ng-container
+        ><button mat-button (click)="toggleCompletion(element)">
+          {{ element.completed ? "Mark as incomplete" : "Mark as conpleted" }}
+        </button></ng-container
+      >
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="details">
+    <th mat-header-cell *matHeaderCellDef>Details</th>
+    <td mat-cell *matCellDef="let element">
+      <a mat-button [routerLink]="['/tickets/', element.id]">View Details</a>
+    </td>
+  </ng-container>
+
+  <!-- <mat-list-item *ngFor="let t of tickets | async">
+    Ticket: {{ t.id }}, {{ t.description }}
+  </mat-list-item> -->
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <tr mat-row id="row" *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
